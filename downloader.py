@@ -25,13 +25,13 @@ class Attachment:
 
 @dataclass
 class PostInfo:
-    attachments: list[Attachment]
-    description: Union[str, None]
+    attachments: list
+    description: Union
 
 
 class Downloader(ABC):
     @staticmethod
-    def download(link) -> str:
+    def download(link):
         pass
 
 
@@ -56,20 +56,20 @@ class Downloader(ABC):
 
 class VkDownloader(Downloader):
     @staticmethod
-    def download(link: str) -> PostInfo:
+    def download(link):
         photos, desc = VkDownloader.get_attachments(link)
         attachments = VkDownloader.download_attachments(photos)
         return PostInfo(attachments, desc)
 
     @staticmethod
-    def get_attachments(link: str) -> tuple[list[dict], str]:
+    def get_attachments(link):
         kwargs = VkDownloader.get_kwargs_from_link(link)
         post = kwargs['w'].replace('wall', '')
         res = vk.wall.getById(posts=[post])
         return res[0]['attachments'], res[0]['text']
 
     @staticmethod
-    def download_attachments(photos: list[dict]) -> list[Attachment]:
+    def download_attachments(photos):
         ph = []
         for attachment in photos:
             if attachment['type'] == 'photo':
@@ -93,7 +93,7 @@ class VkDownloader(Downloader):
         return ph
 
     @staticmethod
-    def get_max_size(photo: dict):
+    def get_max_size(photo):
         max_photo = None
         max_size = 0
         for size in photo['sizes']:
@@ -103,7 +103,7 @@ class VkDownloader(Downloader):
         return max_photo
 
     @staticmethod
-    def get_kwargs_from_link(link: str):
+    def get_kwargs_from_link(link):
         try:
             args = link.split('?')[1]
             d = {}
@@ -124,7 +124,7 @@ def resolution_youtube_converter(resolution):
 
 class YouTubeDownloader(Downloader):
     @staticmethod
-    def download(link) -> PostInfo:
+    def download(link):
         yt = YouTube(link)
         streams = yt.streams.filter(file_extension='mp4')
         stream = YouTubeDownloader.find_highest_resolution(streams)
@@ -132,7 +132,7 @@ class YouTubeDownloader(Downloader):
         return PostInfo([file_name], None)
 
     @staticmethod
-    def find_highest_resolution(streams: YouTube.streams):
+    def find_highest_resolution(streams):
         highest = streams[0]
         for stream in streams:
             highest_res = resolution_youtube_converter(highest.resolution)

@@ -19,7 +19,6 @@ with open('start.txt', 'rb') as f:
 
 client = Client('anon', settings.PyrogramSettings.API_ID, settings.PyrogramSettings.API_HASH)
 client.start()
-
 bot = Bot(token=settings.AiogramSettings.TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)

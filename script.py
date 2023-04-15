@@ -16,7 +16,7 @@ f.close()
 w.close()
 client = Client(f'{temp_name}', settings.PyrogramSettings.API_ID, settings.PyrogramSettings.API_HASH)
 client.start()
-DOG_BOT = ''
+DOG_BOT = '@iSave_by_bot'
 
 
 async def manage(service, chat_id, link):
@@ -26,7 +26,7 @@ async def manage(service, chat_id, link):
         info = downloader.YouTubeDownloader.download(link)
         await bot.edit_message_text('Отправляем видео ⏳', d.chat.id, d.message_id)
         file = open(info.attachments[0], 'rb')
-        res = (await client.send_video('@DIIIIIIIIIIIMAbot', file)).video
+        res = (await client.send_video(DOG_BOT, file)).video
         file.close()
         os.remove(info.attachments[0])
         await bot.send_video(chat_id, res.file_id)
@@ -42,7 +42,7 @@ async def manage(service, chat_id, link):
                     media_group.attach_photo(types.InputFile(attachment.file_name))
                 if attachment.type_attachment == downloader.TypeAttachment.VIDEO:
                     file = open(attachment.file_name, 'rb')
-                    res = (await client.send_video('@DIIIIIIIIIIIMAbot', file)).video
+                    res = (await client.send_video(DOG_BOT, file)).video
                     file.close()
                     media_group.attach_video(res.file_id)
             if info.description:
@@ -56,7 +56,7 @@ async def manage(service, chat_id, link):
                                      parse_mode='Markdown')
             if attachment.type_attachment == downloader.TypeAttachment.VIDEO:
                 file = open(attachment.file_name, 'rb')
-                res = (await client.send_video('@DIIIIIIIIIIIMAbot', file)).video
+                res = (await client.send_video(DOG_BOT, file)).video
                 file.close()
                 await bot.send_video(chat_id, res.file_id, caption=info.description,
                                      parse_mode='Markdown')
