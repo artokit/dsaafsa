@@ -32,6 +32,40 @@ async def manage(service, chat_id, link):
         await bot.send_video(chat_id, res.file_id)
         await bot.delete_message(d.chat.id, d.message_id)
 
+    if service == 'instagram':
+        path = downloader.InstDownloader.download(link)
+        await bot.edit_message_text('Отправляем данные ⏳', d.chat.id, d.message_id)
+        files = [os.path.join(path, i) for i in os.listdir(path)]
+        attachments = [i for i in files if not i.endswith('.txt') and 'json' not in i]
+        text = None
+        if [i for i in files if i.endswith('.txt')]:
+            with open([i for i in files if i.endswith('.txt')][0], 'rb') as f:
+                text = f.read().decode()
+
+        if len(attachments) == 1:
+            with open(attachments[0], 'rb') as f:
+                if attachmets[0].endswith('.jpg') or attachmets[0].endswith('.png') or attachmets[0].endswith('.svg') or attachmets[0].endswith('.web'):
+                    await bot.send_photo(chat_id, f, caption=text)
+                else:
+                    await bot.send_video(chat_id, f, caption=text)
+        else:
+            media_group = types.MediaGroup()
+            for i in attachments:
+                if i.endswith('.jpg') or i.endswith('.png') or i.endswith('.svg') or i.endswith('.web'):
+                    media_group.attach_photo(types.InputFile(i))
+                else:
+                    file = open(i, 'rb')
+                    res = (await client.send_video(DOG_BOT, file)).video
+                    file.close()
+                    media_group.attach_video(res.file_id)
+            await bot.send_media_group(chat_id, media_group)
+            if text:
+                await bot.send_message(chat_id, text)
+
+        os.system(f'rm ./{path} -r')
+        await bot.delete_message(d.chat.id, d.message_id)
+
+
     if service == 'vk':
         info = downloader.VkDownloader.download(link)
         await bot.edit_message_text('Отправляем данные ⏳', d.chat.id, d.message_id)

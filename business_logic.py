@@ -15,7 +15,7 @@ class DB:
 
     def add_user(self, user_id: int):
         try:
-            self.cursor.execute(f'INSERT INTO USERS VALUES ({user_id}, 0)')
+            self.cursor.execute(f'INSERT INTO USERS VALUES ({user_id}, 1)')
             self.connect.commit()
         except sqlite3.IntegrityError:
             pass

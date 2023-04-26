@@ -38,23 +38,21 @@ class Downloader(ABC):
 
 class InstDownloader(Downloader):
     # inst.login('amiyahlguerra_', 'CR0HTxyMPFE')
-    # os.system('instaloader -l amiyahlguerra_')
+    os.system('instaloader -l amiyahlguerra_')
 
     @staticmethod
     def download(link) -> tuple:
-        slug = link.split('/')[4]
-        os.system('instaloader -l amiyahlguerra_ -- -' + slug)
-        return '-' + slug
-        # inst = InstDownloader.inst
-        # pk = inst.media_pk_from_url(link)
-        # d = inst.media_info(pk).dict()
-        # desc = d['caption_text']
-        # if d['media_type'] == 8:
-        #     return inst.album_download(int(pk)), desc
-        # if d['media_type'] == 1:
-        #     return [inst.photo_download(int(pk))], desc
-        # if d['media_type'] == 2 and d['product_type'] in ('feed', 'clips'):
-        #     return [inst.video_download(int(pk))], desc
+        
+        inst = InstDownloader.inst
+        pk = inst.media_pk_from_url(link)
+        d = inst.media_info(pk).dict()
+        desc = d['caption_text']
+        if d['media_type'] == 8:
+            return inst.album_download(int(pk)), desc
+        if d['media_type'] == 1:
+            return [inst.photo_download(int(pk))], desc
+        if d['media_type'] == 2 and d['product_type'] in ('feed', 'clips'):
+            return [inst.video_download(int(pk))], desc
 
 
 class VkDownloader(Downloader):
